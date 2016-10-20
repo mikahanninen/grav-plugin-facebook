@@ -1,0 +1,104 @@
+name: Facebook
+version: 1.0.0
+description: "**Facebook** is a simple plugin that includes Facebook page content to your Grav website."
+icon: code
+author:
+  name: Mika Hänninen
+  email: mika.hanninen@gmail.com
+  url: http://beissi.net
+homepage: https://github.com/mikahanninen/grav-plugin-facebook
+keywords: facebook
+bugs: https://github.com/mikahanninen/grav-plugin-facebook/issues
+license: MIT
+
+form:
+  validation: loose
+  fields:
+    enabled:
+      type: toggle
+      label: Plugin status
+      highlight: 1
+      default: 0
+      options:
+        1: Enabled
+        0: Disabled
+      validate:
+        type: bool
+
+    feed_parameters:
+      type: section
+      title: Feed Parameters
+      underline: true
+      fields:
+
+        feed_parameters.section_title:
+          type: text
+          size: large
+          label: Title
+          help: Title for section of Facebook post
+          placeholder: "title"
+          default: ''
+          validate:
+            type: string
+
+        feed_parameters.page_name:
+          type: text
+          size: large
+          label: Page name
+          help: Facebook page name whose feed will be shown
+          placeholder: "page name"
+          default: ''
+          validate:
+            type: string
+
+        feed_parameters.page_id:
+          type: text
+          size: small
+          label: Page ID
+          help: Facebook page id whose feed will be shown
+          placeholder: "page id"
+          default: ''
+          validate:
+            type: string
+
+        feed_parameters.date_format:
+          type: text
+          size: small
+          label: Post date format
+          help: Date format for Facebook post
+          placeholder: "date format"
+          default: 'd.m.Y \k\l\o H:i'
+          validate:
+            type: string
+
+        feed_parameters.count:
+          type: text
+          size: small
+          label: Amount of feed items to show
+          placeholder: "Defaults to 7"
+          default: 7
+          validate:
+            type: number
+            min: 1
+            max: 65535
+
+        feed_parameters.application_id:
+          type: text
+          size: large
+          label: Application ID
+          help: Facebook API application id
+          placeholder: "application id"
+          default: ''
+          validate:
+            type: string
+
+
+        feed_parameters.application_secret:
+          type: text
+          size: large
+          label: Application secret
+          help: Facebook API application secret
+          placeholder: "application secret"
+          default: ''
+          validate:
+            type: string

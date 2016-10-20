@@ -1,0 +1,4 @@
+#facebook-posts { border-top: 2px solid #888; padding-top: 20px; margin-top: 40px; }
+#facebook-posts .heading { line-height: 29px; padding-left: 40px; background-image: url(../assets/FB-f-Logo__blue_29.png); background-repeat: no-repeat; background-position: left center; text-transform: uppercase; font-family: "Roboto Slab","Droid Arabic Kufi",Arial,sans-serif;}
+#facebook-posts .facebook-post { padding: 20px 10px; margin-bottom: 20px !important; border-bottom: 2px solid #888; }
+#facebook-posts .facebook-post a:hover { color: black; }
