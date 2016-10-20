@@ -5,7 +5,6 @@ icon: code
 author:
   name: Mika Hänninen
   email: mika.hanninen@gmail.com
-  url: http://beissi.net
 homepage: https://github.com/mikahanninen/grav-plugin-facebook
 keywords: facebook
 bugs: https://github.com/mikahanninen/grav-plugin-facebook/issues
