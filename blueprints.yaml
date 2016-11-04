@@ -1,7 +1,7 @@
 name: Facebook
 version: 1.0.0
 description: "**Facebook** is a simple plugin that includes Facebook page content to your Grav website."
-icon: code
+icon: facebook
 author:
   name: Mika Hänninen
   email: mika.hanninen@gmail.com
