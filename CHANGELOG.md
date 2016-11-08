@@ -1,5 +1,14 @@
+# v1.0.2
+## 11/08/2016
+
+1. [](#bugfix)
+  * Update plugin version number in the blueprints
+
+2. [](#improved)
+    * Update README to reflect plugin HTML output example
+
 # v1.0.1
-## 04/11/2016
+## 11/04/2016
 
 1. [](#improved)
   * Changed plugin icon to Facebook icon
@@ -8,7 +17,7 @@
   * Moved post images after post message
 
 # v1.0.0
-## 20/10/2016
+## 10/20/2016
 
 1. [](#new)
   * ChangeLog started...
