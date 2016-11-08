@@ -60,8 +60,9 @@ This will be converted into your Facebook posts as follows:
 {{ sectionTitle }}
   <div class='facebook-post'>
     <a href='{{ post.link }}' title='Facebook post'>
-    <h4 class='media-heading'>{{ post.time }}</h4>
-    {{ post.message }} {{ post.image }}
+    <i class="fa fa-envelope" aria-hidden='true' style='display: inline-block; font-size: 22px; line-height: 22px; padding-right: 10px;'></i><h4 class='media-heading' style='display: inline-block;'>{{ post.time }}</h4>
+    <p>{{ post.message }}</p>
+    {{ post.image }}
     </a>
   </div>
   ...
