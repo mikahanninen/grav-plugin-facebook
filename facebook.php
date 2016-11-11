@@ -91,8 +91,9 @@ class FacebookPlugin extends Plugin {
           $r[$created_at]['message'] = nl2br($val->message);
           $r[$created_at]['link'] = $val->permalink_url;
         }
+        $this->addFeed($r);
       }
-      $this->addFeed($r);
+
     }
 
     private function addFeed($result) {
@@ -105,6 +106,7 @@ class FacebookPlugin extends Plugin {
     }
 
     private function tagsExist($tags_string, $message) {
+      if(empty($tags_string)) return true;
       $all_tags = explode(" ", $tags_string);
       foreach($all_tags as $atag) {
         if(stripos( $message, $atag ) === FALSE) {

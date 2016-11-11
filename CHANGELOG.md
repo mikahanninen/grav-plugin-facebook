@@ -1,3 +1,9 @@
+# v1.1.1
+## 11/11/2016
+
+1. [](#bugfix)
+  * Fix issue with empty tag filter
+
 # v1.1.0
 ## 11/11/2016
 
