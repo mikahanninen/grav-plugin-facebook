@@ -1,6 +1,6 @@
 # Grav Facebook Plugin
 
-`Facebook` is a simple [Grav][grav] Plugin that includes your Facebook page content to your Grav website.
+`Facebook` is a simple [Grav][grav] Plugin that includes your Facebook page content to your Grav website. Plugin can be used to get any public Facebook page content.
 
 # Installation
 
@@ -28,7 +28,6 @@ You need to provide few configurations in order for the feed show up. In your Gr
 
 Enter the Facebook *page_id* which feed you want to show, and your Facebook API *application_id* and *application_secret*.
 
-
 For more information how to get application set up, see the [Facebook Developers documentation](https://developers.facebook.com/).
 
 # Customization
@@ -45,6 +44,8 @@ It will now override the default markup of the feed. You can tweak it however yo
 
 If you need to override some plugin default values, the best practise is to copy the [facebook.yaml](facebook.yaml) file into your `users/config/plugins/` folder (create it if it doesn't exist), and then modify there. This will override the default settings.
 
+Facebook *page_id* can be found with service like [Find your Facebook ID](http://findmyfbid.com/).
+
 # Usage
 
 To use this plugin you simply need to include a function your template file such as:
@@ -60,11 +61,19 @@ This will be converted into your Facebook posts as follows:
 {{ sectionTitle }}
   <div class='facebook-post'>
     <a href='{{ post.link }}' title='Facebook post'>
-    <i class="fa fa-envelope" aria-hidden='true' style='display: inline-block; font-size: 22px; line-height: 22px; padding-right: 10px;'></i><h4 class='media-heading' style='display: inline-block;'>{{ post.time }}</h4>
+    <i class="fa fa-envelope post-icon" aria-hidden='true'></i><h4 class='media-heading'>{{ post.time }}</h4>
     <p>{{ post.message }}</p>
     {{ post.image }}
     </a>
   </div>
   ...
 </div>
+```
+
+## Filtering by tags
+
+You can filter Facebook posts by tags function parameter or with config parameter *Tag filter*.
+
+```
+{{ facebook_posts('#MySpecialTag') }}
 ```

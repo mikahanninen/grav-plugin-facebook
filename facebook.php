@@ -49,18 +49,20 @@ class FacebookPlugin extends Plugin {
     }
 
 
-    public function getFacebookPosts() {
+    public function getFacebookPosts($filtered_by_tags_from_page = "") {
       /** @var Page $page */
       $page = $this->grav['page'];
       /** @var Twig $twig */
       $twig = $this->grav['twig'];
       /** @var Data $config */
       $config = $this->mergeConfig($page, TRUE);
+
+      $filter_by_tags = empty($filtered_by_tags_from_page) ? $config->get('feed_parameters.filter_by_tags') : $filtered_by_tags_from_page;
       // Generate API url
       $url = 'https://graph.facebook.com/'.$config->get('feed_parameters.page_id').'/?fields=feed{permalink_url,created_time,link,attachments,message}&access_token='.$config->get('feed_parameters.application_id').'|'.$config->get('feed_parameters.application_secret');
       $results = Response::get($url);
 
-      $this->parseResponse($results, $config);
+      $this->parseResponse($results, $config, $filter_by_tags);
 
       $this->template_vars = [
           'sectionTitle'  => '<a href="https://www.facebook.com/'.$config->get('feed_parameters.page_name').'/"><h3 class="heading">'.$config->get('feed_parameters.section_title').'</h3></a>',
@@ -69,20 +71,20 @@ class FacebookPlugin extends Plugin {
       ];
 
       $output = $this->grav['twig']->twig()->render($this->template_html, $this->template_vars);
-
       return $output;
     }
 
-    private function parseResponse($json, $config) {
+    private function parseResponse($json, $config, $tags_string) {
       $r = array();
       $content = json_decode($json);
 
       foreach($content->feed->data as $val) {
-        if(property_exists($val, 'message')) {
+        if(property_exists($val, 'message') && $this->tagsExist($tags_string, $val->message)) {
           $created_at = $val->created_time;
           $created_date_object = date_create($created_at);
           $formatted_date = date_format($created_date_object, $config->get('feed_parameters.date_format'));
           $image = "";
+
           if(property_exists($val, 'attachments') && property_exists($val->attachments->data[0], 'media')) $image = "<img class='media-object' src='".$val->attachments->data[0]->media->image->src."' alt='kuva'>";
           $r[$created_at]['time'] = $formatted_date;
           $r[$created_at]['image'] = $image;
@@ -100,5 +102,15 @@ class FacebookPlugin extends Plugin {
         }
       }
       krsort($this->feeds);
+    }
+
+    private function tagsExist($tags_string, $message) {
+      $all_tags = explode(" ", $tags_string);
+      foreach($all_tags as $atag) {
+        if(stripos( $message, $atag ) === FALSE) {
+          return false;
+        }
+      }
+      return true;
     }
 }

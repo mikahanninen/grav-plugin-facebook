@@ -4,3 +4,5 @@
 #facebook-posts .facebook-post h4 { margin-bottom: 0; }
 #facebook-posts .facebook-post a { color: black; }
 #facebook-posts .facebook-post a:hover { color: black; }
+#facebook-posts .post-icon { display: inline-block; font-size: 22px; line-height: 22px; padding-right: 10px; }
+#facebook-posts .media-heading { display: inline-block; }
