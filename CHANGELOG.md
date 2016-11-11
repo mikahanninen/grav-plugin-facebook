@@ -1,3 +1,12 @@
+# v1.1.0
+## 11/11/2016
+
+1. [](#new)
+  * Add ability to filter posts by tag or tags
+
+2. [](#improved)
+  * Remove inline styles from HTML output
+
 # v1.0.2
 ## 11/08/2016
 
