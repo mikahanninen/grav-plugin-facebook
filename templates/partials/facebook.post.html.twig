@@ -1,0 +1,12 @@
+<div id='facebook-posts'>
+{{ sectionTitle }}
+{% for post in feed|slice(0, count)  %}
+  <div class='facebook-post'>
+    <a href='{{ post.link }}' title='Facebook post'>
+    <i class="fa fa-envelope post-icon" aria-hidden='true'></i><h4 class='media-heading'>{{ post.time }}</h4></a>
+    <p>{{ post.message }}</p>
+    {{ post.image }}
+    </p>
+  </div>
+{% endfor %}
+</div>
