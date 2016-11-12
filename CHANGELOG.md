@@ -1,3 +1,12 @@
+# v1.2.0
+## 11/12/2016
+
+1. [](#new)
+  * Add Facebook events functionality
+
+2. [](#improved)
+  * Refactored configuration structure
+
 # v1.1.1
 ## 11/11/2016
 

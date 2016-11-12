@@ -7,8 +7,10 @@ use Grav\Common\Page\Page;
 use Grav\Common\GPM\Response;
 
 class FacebookPlugin extends Plugin {
-    private $template_html = 'partials/facebook.html.twig';
-    private $template_vars = [];
+    private $template_post_html = 'partials/facebook.post.html.twig';
+    private $template_event_html = 'partials/facebook.event.html.twig';
+    private $template_post_vars = [];
+    private $template_event_vars = [];
     /**
      * Return a list of subscribed events.
      *
@@ -36,6 +38,7 @@ class FacebookPlugin extends Plugin {
      */
     public function onTwigInitialized() {
         $this->grav['twig']->twig->addFunction(new \Twig_SimpleFunction('facebook_posts', [$this, 'getFacebookPosts']));
+        $this->grav['twig']->twig->addFunction(new \Twig_SimpleFunction('facebook_events', [$this, 'getFacebookEvents']));
         if ($this->config->get('plugins.facebook.built_in_css')) {
             $this->grav['assets']->add('plugin://facebook/css/facebook.css');
         }
@@ -57,24 +60,48 @@ class FacebookPlugin extends Plugin {
       /** @var Data $config */
       $config = $this->mergeConfig($page, TRUE);
 
-      $filter_by_tags = empty($filtered_by_tags_from_page) ? $config->get('feed_parameters.filter_by_tags') : $filtered_by_tags_from_page;
+      $filter_by_tags = empty($filtered_by_tags_from_page) ? $config->get('facebook_page_settings.filter_by_tags') : $filtered_by_tags_from_page;
       // Generate API url
-      $url = 'https://graph.facebook.com/'.$config->get('feed_parameters.page_id').'/?fields=feed{permalink_url,created_time,link,attachments,message}&access_token='.$config->get('feed_parameters.application_id').'|'.$config->get('feed_parameters.application_secret');
+      $url = 'https://graph.facebook.com/'.$config->get('facebook_page_settings.page_id').'/?fields=feed{permalink_url,created_time,link,attachments,message}&access_token='.$config->get('facebook_common_settings.application_id').'|'.$config->get('facebook_common_settings.application_secret');
       $results = Response::get($url);
 
-      $this->parseResponse($results, $config, $filter_by_tags);
+      $this->parsePostResponse($results, $config, $filter_by_tags);
 
-      $this->template_vars = [
-          'sectionTitle'  => '<a href="https://www.facebook.com/'.$config->get('feed_parameters.page_name').'/"><h3 class="heading">'.$config->get('feed_parameters.section_title').'</h3></a>',
+      $this->template_post_vars = [
+          'sectionTitle'  => '<a href="https://www.facebook.com/'.$config->get('facebook_page_settings.page_name').'/"><h3 class="heading">'.$config->get('facebook_page_settings.section_title').'</h3></a>',
           'feed'          => $this->feeds,
-          'count'         => $config->get('feed_parameters.count')
+          'count'         => empty($config->get('facebook_page_settings.count')) ? 7 : $config->get('facebook_page_settings.count')
       ];
 
-      $output = $this->grav['twig']->twig()->render($this->template_html, $this->template_vars);
+      $output = $this->grav['twig']->twig()->render($this->template_post_html, $this->template_post_vars);
       return $output;
     }
 
-    private function parseResponse($json, $config, $tags_string) {
+    public function getFacebookEvents() {
+      /** @var Page $page */
+      $page = $this->grav['page'];
+      /** @var Twig $twig */
+      $twig = $this->grav['twig'];
+      /** @var Data $config */
+      $config = $this->mergeConfig($page, TRUE);
+
+      $events_page_id = empty($config->get('facebook_event_settings.events_page_id')) ? $config->get('facebook_page_settings.page_id') : $config->get('facebook_event_settings.events_page_id');
+      // Generate API url
+      $url = 'https://graph.facebook.com/'.$events_page_id.'/events?access_token='.$config->get('facebook_common_settings.application_id').'|'.$config->get('facebook_common_settings.application_secret');
+      $results = Response::get($url);
+      $this->parseEventResponse($results, $config);
+      $this->template_event_vars = [
+          'sectionTitle'  => '<h3 class="heading">'.$config->get('facebook_event_settings.section_title').'</h3>',
+          'events'        => $this->events,
+          'count'         => empty($config->get('facebook_event_settings.count')) ? 7 : $config->get('facebook_event_settings.count')
+      ];
+
+      $output = $this->grav['twig']->twig()->render($this->template_event_html, $this->template_event_vars);
+      return $output;
+    }
+
+
+    private function parsePostResponse($json, $config, $tags_string) {
       $r = array();
       $content = json_decode($json);
 
@@ -82,19 +109,63 @@ class FacebookPlugin extends Plugin {
         if(property_exists($val, 'message') && $this->tagsExist($tags_string, $val->message)) {
           $created_at = $val->created_time;
           $created_date_object = date_create($created_at);
-          $formatted_date = date_format($created_date_object, $config->get('feed_parameters.date_format'));
-          $image = "";
+          $formatted_date = date_format($created_date_object, $config->get('facebook_page_settings.date_format'));
+          $image_html = "";
 
-          if(property_exists($val, 'attachments') && property_exists($val->attachments->data[0], 'media')) $image = "<img class='media-object' src='".$val->attachments->data[0]->media->image->src."' alt='kuva'>";
+          if(property_exists($val, 'attachments') && property_exists($val->attachments->data[0], 'media')) {
+            $image_html = "<figure>";
+            $image_html .= "<img class='media-object' src='".$val->attachments->data[0]->media->image->src."'>";
+            if(property_exists($val->attachments->data[0], 'description')) $image_html .= "<figcaption>".nl2br($val->attachments->data[0]->description)."</figcaption>";
+            $image_html .= "</figure>";
+          }
+
           $r[$created_at]['time'] = $formatted_date;
-          $r[$created_at]['image'] = $image;
+          $r[$created_at]['image'] = $image_html;
           $r[$created_at]['message'] = nl2br($val->message);
           $r[$created_at]['link'] = $val->permalink_url;
         }
         $this->addFeed($r);
       }
-
     }
+
+    private function parseEventResponse($json, $config) {
+      $r = array();
+      $content = json_decode($json);
+
+      foreach($content->data as $val) {
+        $start_at = $val->start_time;
+        $end_at = $val->end_time;
+        $start_date_array = date_parse($start_at);
+        $end_date_array = date_parse($end_at);
+
+        $start_date_array['monthName'] = date('F', mktime(0, 0, 0, $start_date_array['month'], 10));
+        $start_date_array['dayName'] = date('l', mktime(0, 0, 0, $start_date_array['month'], $start_date_array['day'], $start_date_array['year']));
+        $end_date_array['monthName'] = date('F', mktime(0, 0, 0, $end_date_array['month'], 10));
+
+        $r[$start_at]['start_time'] = $start_date_array;
+        $r[$start_at]['end_time'] = $end_date_array;
+
+        if(($start_date_array['year'] === $end_date_array['year']) &&
+            ($start_date_array['month'] === $end_date_array['month']) &&
+            ($start_date_array['day'] === $end_date_array['day'])
+          ) {
+          $event_start_hour = ($start_date_array['hour'] === 0) ? '00' : $start_date_array['hour'];
+          $event_start_minute = ($start_date_array['minute'] === 0) ? '00' : $start_date_array['minute'];
+          $r[$start_at]['period'] = $start_date_array['dayName'].' '.$event_start_hour.':'.$event_start_minute;
+        } else {
+          $r[$start_at]['period'] = $start_date_array['day'].'. '.$start_date_array['monthName'].' '.$start_date_array['year'].' - '.$end_date_array['day'].'. '.$end_date_array['monthName'].' '.$end_date_array['year'];
+        }
+
+        $r[$start_at]['name'] = nl2br($val->name);
+        $r[$start_at]['place'] = '';
+        if(property_exists($val, 'place')) {
+            $r[$start_at]['place'] = $val->place->name;
+        }
+
+        $this->addEvent($r);
+      }
+    }
+
 
     private function addFeed($result) {
       foreach ($result as $key => $val) {
@@ -103,6 +174,15 @@ class FacebookPlugin extends Plugin {
         }
       }
       krsort($this->feeds);
+    }
+
+    private function addEvent($result) {
+      foreach ($result as $key => $val) {
+        if (!isset($this->events[$key])) {
+          $this->events[$key] = $val;
+        }
+      }
+      krsort($this->events);
     }
 
     private function tagsExist($tags_string, $message) {

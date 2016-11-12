@@ -1,0 +1,17 @@
+<div id='facebook-events'>
+{{ sectionTitle }}
+<table>
+{% for event in events|slice(0, count)  %}
+  <tr class='facebook-event'>
+    <td class='start-date'>
+      <span class='month'>{{ event.start_time.monthName }}</span>
+      <span class='day'>{{ event.start_time.day }}</span>
+    </td>
+    <td class='details'>
+      <span class='name'>{{ event.name }}</span><span class='location'>{{ event.place }}</span>
+      <span class='period'>{{ event.period }}</span>
+    </td>
+  </tr>
+{% endfor %}
+</table>
+</div>

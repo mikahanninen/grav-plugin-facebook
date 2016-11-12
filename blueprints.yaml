@@ -1,6 +1,6 @@
 name: Facebook
-version: 1.1.1
-description: "**Facebook** is a simple plugin that includes Facebook page content to your Grav website."
+version: 1.2.0
+description: "**Facebook** is a plugin that embeds Facebook page content or events into your Grav website."
 icon: facebook
 author:
   name: Mika Hänninen
@@ -8,11 +8,17 @@ author:
 homepage: https://github.com/mikahanninen/grav-plugin-facebook
 keywords: facebook
 bugs: https://github.com/mikahanninen/grav-plugin-facebook/issues
+docs: https://github.com/mikahanninen/grav-plugin-facebook/blob/develop/README.md
 license: MIT
 
 form:
   validation: loose
   fields:
+    Basics:
+      type: section
+      title: Basics
+      underline: false
+
     enabled:
       type: toggle
       label: Plugin status
@@ -24,90 +30,130 @@ form:
       validate:
         type: bool
 
-    feed_parameters:
+    PostSettings:
       type: section
-      title: Feed Parameters
+      title: Post settings
       underline: true
-      fields:
 
-        feed_parameters.section_title:
-          type: text
-          size: large
-          label: Title
-          help: Title for section of Facebook post
-          placeholder: "title"
-          default: ''
-          validate:
-            type: string
+    facebook_page_settings.section_title:
+      type: text
+      size: large
+      label: Title for Posts
+      help: Title for section of Facebook Posts
+      placeholder: "title"
+      default: ''
+      validate:
+        type: string
 
-        feed_parameters.page_name:
-          type: text
-          size: large
-          label: Page name
-          help: Facebook page name whose feed will be shown
-          placeholder: "page name"
-          default: ''
-          validate:
-            type: string
+    facebook_page_settings.page_name:
+      type: text
+      size: large
+      label: Page name
+      help: Facebook page name whose feed will be shown. Used in a link.
+      placeholder: "page name"
+      default: ''
+      validate:
+        type: string
 
-        feed_parameters.page_id:
-          type: text
-          size: small
-          label: Page ID
-          help: Facebook page id whose feed will be shown
-          placeholder: "page id"
-          default: ''
-          validate:
-            type: string
+    facebook_page_settings.page_id:
+      type: text
+      size: small
+      label: Posts page ID
+      help: Facebook page id whose POSTS will be shown
+      placeholder: "page id"
+      default: ''
+      validate:
+        type: string
 
-        feed_parameters.date_format:
-          type: text
-          size: small
-          label: Post date format
-          help: Date format for Facebook post
-          placeholder: "date format"
-          default: 'd.m.Y \k\l\o H:i'
-          validate:
-            type: string
+    facebook_page_settings.date_format:
+      type: text
+      size: small
+      label: Post date format
+      help: Date format for Facebook post
+      placeholder: "date format"
+      default: 'd.m.Y \k\l\o H:i'
+      validate:
+        type: string
 
-        feed_parameters.count:
-          type: text
-          size: small
-          label: Amount of feed items to show
-          placeholder: "Defaults to 7"
-          default: 7
-          validate:
-            type: number
-            min: 1
-            max: 65535
+    facebook_page_settings.count:
+      type: text
+      size: small
+      label: Amount of posts to show
+      placeholder: "Defaults to 7"
+      default: 7
+      validate:
+        type: number
+        min: 1
+        max: 65535
 
-        feed_parameters.filter_by_tags:
-          type: text
-          size: large
-          label: Tag filter
-          help: Tag(s) to filter posts with
-          placeholder: "tag(s)"
-          default: ''
-          validate:
-            type: string
+    facebook_page_settings.filter_by_tags:
+      type: text
+      size: large
+      label: Tag filter
+      help: Tag(s) to filter posts with
+      placeholder: "tag(s)"
+      default: ''
+      validate:
+        type: string
 
-        feed_parameters.application_id:
-          type: text
-          size: large
-          label: Application ID
-          help: Facebook API application id
-          placeholder: "application id"
-          default: ''
-          validate:
-            type: string
+    EventSettings:
+      type: section
+      title: Event settings
+      underline: true
+
+    facebook_event_settings.section_title:
+      type: text
+      size: large
+      label: Title for Events
+      help: Title for section of Facebook Events
+      placeholder: "title"
+      default: ''
+      validate:
+        type: string
+
+    facebook_event_settings.events_page_id:
+      type: text
+      size: small
+      label: Events page ID
+      help: Facebook page id whose EVENTS will be shown. If empty, shows events for same page as posts.
+      placeholder: "events page id"
+      default: ''
+      validate:
+        type: string
+
+    facebook_event_settings.count:
+      type: text
+      size: small
+      label: Amount of events to show
+      placeholder: "Defaults to 7"
+      default: 7
+      validate:
+        type: number
+        min: 1
+        max: 65535
+
+    CommonSettings:
+      type: section
+      title: Facebook API settings
+      underline: true
+
+    facebook_common_settings.application_id:
+      type: text
+      size: large
+      label: Application ID
+      help: Facebook API application id
+      placeholder: "application id"
+      default: ''
+      validate:
+        type: string
 
 
-        feed_parameters.application_secret:
-          type: text
-          size: large
-          label: Application secret
-          help: Facebook API application secret
-          placeholder: "application secret"
-          default: ''
-          validate:
-            type: string
+    facebook_common_settings.application_secret:
+      type: text
+      size: large
+      label: Application secret
+      help: Facebook API application secret
+      placeholder: "application secret"
+      default: ''
+      validate:
+        type: string
