@@ -2,6 +2,14 @@
 
 `Facebook` is a simple [Grav][grav] Plugin that includes your Facebook page content to your Grav website. Plugin can be used to get any public Facebook page content.
 
+### Posts example
+
+![](assets/assets/facebook_post_example_png)
+
+### Events example
+
+![](assets/assets/facebook_events_example_png)
+
 # Installation
 
 Installing the Facebook plugin can be done in one of two ways. Using GPM (Grav Package Manager) installation method enables you to quickly and easily install the plugin with a simple terminal command, while the manual method enables you to do so via a zip file.
@@ -46,9 +54,9 @@ If you need to override some plugin default values, the best practise is to copy
 
 Facebook *page_id* can be found with service like [Find your Facebook ID](http://findmyfbid.com/).
 
-# Usage
+# Getting Facebook Posts
 
-To use this plugin you simply need to include a function your template file such as:
+You simply need to include a function your template file such as:
 
 ```
 {{ facebook_posts() }}
@@ -76,4 +84,33 @@ You can filter Facebook posts by tags function parameter or with config paramete
 
 ```
 {{ facebook_posts('#MySpecialTag') }}
+```
+
+# Getting Facebook Events
+
+You simply need to include a function your template file such as:
+
+```
+{{ facebook_events() }}
+```
+
+This will be converted into your Facebook events as follows:
+
+```
+<div id='facebook-events'>
+{{ sectionTitle }}
+<table>
+  <tr class='facebook-event'>
+    <td class='start-date'>
+      <span class='month'>{{ event.start_time.monthName }}</span>
+      <span class='day'>{{ event.start_time.day }}</span>
+    </td>
+    <td class='details'>
+      <span class='name'>{{ event.name }}</span><span class='location'>{{ event.place }}</span>
+      <span class='period'>{{ event.period }}</span>
+    </td>
+  </tr>
+  ...
+</table>
+</div>
 ```
