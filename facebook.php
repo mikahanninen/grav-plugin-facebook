@@ -11,6 +11,8 @@ class FacebookPlugin extends Plugin {
     private $template_event_html = 'partials/facebook.event.html.twig';
     private $template_post_vars = [];
     private $template_event_vars = [];
+    private $events = array();
+    private $feeds = array();
     /**
      * Return a list of subscribed events.
      *
@@ -90,6 +92,7 @@ class FacebookPlugin extends Plugin {
       $url = 'https://graph.facebook.com/'.$events_page_id.'/events?access_token='.$config->get('facebook_common_settings.application_id').'|'.$config->get('facebook_common_settings.application_secret');
       $results = Response::get($url);
       $this->parseEventResponse($results, $config);
+
       $this->template_event_vars = [
           'sectionTitle'  => '<h3 class="heading">'.$config->get('facebook_event_settings.section_title').'</h3>',
           'events'        => $this->events,
@@ -123,8 +126,8 @@ class FacebookPlugin extends Plugin {
           $r[$created_at]['image'] = $image_html;
           $r[$created_at]['message'] = nl2br($val->message);
           $r[$created_at]['link'] = $val->permalink_url;
+          $this->addFeed($r);
         }
-        $this->addFeed($r);
       }
     }
 
@@ -133,27 +136,28 @@ class FacebookPlugin extends Plugin {
       $content = json_decode($json);
 
       foreach($content->data as $val) {
-        $start_at = $val->start_time;
-        $end_at = $val->end_time;
-        $start_date_array = date_parse($start_at);
-        $end_date_array = date_parse($end_at);
+        if(property_exists($val, 'start_time') && property_exists($val, 'end_time')) {
+          $start_at = $val->start_time;
+          $end_at = $val->end_time;
+          $start_date_array = date_parse($start_at);
+          $end_date_array = date_parse($end_at);
 
-        $start_date_array['monthName'] = date('F', mktime(0, 0, 0, $start_date_array['month'], 10));
-        $start_date_array['dayName'] = date('l', mktime(0, 0, 0, $start_date_array['month'], $start_date_array['day'], $start_date_array['year']));
-        $end_date_array['monthName'] = date('F', mktime(0, 0, 0, $end_date_array['month'], 10));
+          $start_date_array['monthName'] = date('F', mktime(0, 0, 0, $start_date_array['month'], 10));
+          $start_date_array['dayName'] = date('l', mktime(0, 0, 0, $start_date_array['month'], $start_date_array['day'], $start_date_array['year']));
+          $end_date_array['monthName'] = date('F', mktime(0, 0, 0, $end_date_array['month'], 10));
 
-        $r[$start_at]['start_time'] = $start_date_array;
-        $r[$start_at]['end_time'] = $end_date_array;
-
-        if(($start_date_array['year'] === $end_date_array['year']) &&
-            ($start_date_array['month'] === $end_date_array['month']) &&
-            ($start_date_array['day'] === $end_date_array['day'])
-          ) {
-          $event_start_hour = ($start_date_array['hour'] === 0) ? '00' : $start_date_array['hour'];
-          $event_start_minute = ($start_date_array['minute'] === 0) ? '00' : $start_date_array['minute'];
-          $r[$start_at]['period'] = $start_date_array['dayName'].' '.$event_start_hour.':'.$event_start_minute;
-        } else {
-          $r[$start_at]['period'] = $start_date_array['day'].'. '.$start_date_array['monthName'].' '.$start_date_array['year'].' - '.$end_date_array['day'].'. '.$end_date_array['monthName'].' '.$end_date_array['year'];
+          $r[$start_at]['start_time'] = $start_date_array;
+          $r[$start_at]['end_time'] = $end_date_array;
+          if(($start_date_array['year'] === $end_date_array['year']) &&
+              ($start_date_array['month'] === $end_date_array['month']) &&
+              ($start_date_array['day'] === $end_date_array['day'])
+            ) {
+            $event_start_hour = ($start_date_array['hour'] === 0) ? '00' : $start_date_array['hour'];
+            $event_start_minute = ($start_date_array['minute'] === 0) ? '00' : $start_date_array['minute'];
+            $r[$start_at]['period'] = $start_date_array['dayName'].' '.$event_start_hour.':'.$event_start_minute;
+          } else {
+            $r[$start_at]['period'] = $start_date_array['day'].'. '.$start_date_array['monthName'].' '.$start_date_array['year'].' - '.$end_date_array['day'].'. '.$end_date_array['monthName'].' '.$end_date_array['year'];
+          }
         }
 
         $r[$start_at]['name'] = nl2br($val->name);
