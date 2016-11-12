@@ -115,7 +115,7 @@ class FacebookPlugin extends Plugin {
           if(property_exists($val, 'attachments') && property_exists($val->attachments->data[0], 'media')) {
             $image_html = "<figure>";
             $image_html .= "<img class='media-object' src='".$val->attachments->data[0]->media->image->src."'>";
-            if(property_exists($val->attachments->data[0], 'description')) $image_html .= "<figcaption>".nl2br($val->attachments->data[0]->description)."</figcaption>";
+            //if(property_exists($val->attachments->data[0], 'description')) $image_html .= "<figcaption>".nl2br($val->attachments->data[0]->description)."</figcaption>";
             $image_html .= "</figure>";
           }
 
