@@ -1,9 +1,15 @@
+# v1.2.2
+## 11/12/2016
+
+1. [](#bugfix)
+  * Fix errors with empty feeds and events
+
 # v1.2.1
-## 11/11/2016
+## 11/12/2016
 
 1. [](#bugfix)
   * Fix figcaption
-  
+
 # v1.2.0
 ## 11/12/2016
 
