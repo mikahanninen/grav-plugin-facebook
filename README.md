@@ -4,11 +4,11 @@
 
 ### Posts example
 
-![](assets/assets/facebook_post_example_png)
+![](assets/facebook_post_example_png)
 
 ### Events example
 
-![](assets/assets/facebook_events_example_png)
+![](assets/facebook_events_example_png)
 
 # Installation
 
