@@ -1,5 +1,8 @@
 <div id='facebook-events'>
 {{ sectionTitle }}
+{% if cover != '' %}
+  <img class='cover-image' style='position: relative; left: {{ cover.offset_x }}; top: -{{ cover.offset_y }};' src='{{ cover.source }}'/>
+{% endif %}
 <table>
 {% for event in events|slice(0, count)  %}
   <tr class='facebook-event' data-timestart='{{ event.original_start }}' data-timeend='{{ event.original_end}}'>
@@ -9,7 +12,7 @@
     </td>
     <td class='details'>
       <a href='https://www.facebook.com/events/{{ event.event_link }}'><span class='name'>{{ event.name }}</span></a>
-      <span class='location'>{{ event.place }}</span>
+      <span class='location'>{{ event.place.name }}</span>
       <span class='period'>{{ event.period }}</span>
     </td>
   </tr>

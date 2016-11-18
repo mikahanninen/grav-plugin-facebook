@@ -13,7 +13,9 @@ class FacebookPlugin extends Plugin {
     private $template_post_vars = [];
     private $template_event_vars = [];
     private $events = array();
+    private $eventCover = '';
     private $feeds = array();
+
     /**
      * Return a list of subscribed events.
      *
@@ -90,12 +92,13 @@ class FacebookPlugin extends Plugin {
 
       $events_page_id = empty($config->get('facebook_event_settings.events_page_id')) ? $config->get('facebook_page_settings.page_id') : $config->get('facebook_event_settings.events_page_id');
       // Generate API url
-      $url = 'https://graph.facebook.com/'.$events_page_id.'/events?access_token='.$config->get('facebook_common_settings.application_id').'|'.$config->get('facebook_common_settings.application_secret');
+      $url = 'https://graph.facebook.com/'.$events_page_id.'/events?fields=cover,start_time,end_time,name,description,place&access_token='.$config->get('facebook_common_settings.application_id').'|'.$config->get('facebook_common_settings.application_secret');
       $results = Response::get($url);
       $this->parseEventResponse($results, $config);
 
       $this->template_event_vars = [
           'sectionTitle'  => '<h3 class="heading">'.$config->get('facebook_event_settings.section_title').'</h3>',
+          'cover'         => ($config->get('facebook_event_settings.show_cover') == '1') ? $this->eventCover : '',
           'events'        => $this->events,
           'count'         => empty($config->get('facebook_event_settings.count')) ? 7 : $config->get('facebook_event_settings.count')
       ];
@@ -137,6 +140,11 @@ class FacebookPlugin extends Plugin {
       $content = json_decode($json);
 
       foreach($content->data as $val) {
+        if($this->eventCover == '') {
+          if(property_exists($val, 'cover')) {
+            $this->eventCover = $val->cover;
+          }
+        }
         if(property_exists($val, 'start_time') && property_exists($val, 'end_time')) {
           $start_at = $val->start_time;
           $end_at = $val->end_time;
@@ -149,29 +157,41 @@ class FacebookPlugin extends Plugin {
 
           $r[$start_at]['original_start'] = $start_at;
           $r[$start_at]['original_end'] = $end_at;
+          $start_date_array['hour'] = ($start_date_array['hour'] == 0) ? '00' : $start_date_array['hour'];
+          $start_date_array['minute'] = ($start_date_array['minute'] == 0) ? '00' : $start_date_array['minute'];
+          $end_date_array['hour'] = ($end_date_array['hour'] == 0) ? '00' : $end_date_array['hour'];
+          $end_date_array['minute'] = ($end_date_array['minute'] == 0) ? '00' : $end_date_array['minute'];
           $r[$start_at]['start_time'] = $start_date_array;
           $r[$start_at]['end_time'] = $end_date_array;
-          if(($start_date_array['year'] === $end_date_array['year']) &&
-              ($start_date_array['month'] === $end_date_array['month']) &&
-              ($start_date_array['day'] === $end_date_array['day'])
-            ) {
-            $event_start_hour = ($start_date_array['hour'] === 0) ? '00' : $start_date_array['hour'];
-            $event_start_minute = ($start_date_array['minute'] === 0) ? '00' : $start_date_array['minute'];
-            $r[$start_at]['period'] = $start_date_array['dayName'].' '.$event_start_hour.':'.$event_start_minute;
+          if($this->isStartDaySameAsEnd($start_date_array, $end_date_array)) {
+              $r[$start_at]['period'] = $start_date_array['dayName'].' '.$start_date_array['hour'].':'.$start_date_array['minute'];
           } else {
-            $r[$start_at]['period'] = $start_date_array['day'].'. '.$start_date_array['monthName'].' '.$start_date_array['year'].' - '.$end_date_array['day'].'. '.$end_date_array['monthName'].' '.$end_date_array['year'];
+              $r[$start_at]['period'] = $start_date_array['day'].'. '.$start_date_array['monthName'].' '.$start_date_array['year'].' - '.$end_date_array['day'].'. '.$end_date_array['monthName'].' '.$end_date_array['year'];
           }
           $r[$start_at]['event_link'] = $val->id;
           $r[$start_at]['name'] = nl2br($val->name);
           $r[$start_at]['place'] = '';
+          $r[$start_at]['description'] = '';
+
           if(property_exists($val, 'place')) {
-              $r[$start_at]['place'] = $val->place->name;
+              $r[$start_at]['place']['name'] = $val->place->name;
+              if(property_exists($val->place, 'location')) {
+                $r[$start_at]['place']['location'] = $val->place->location;
+              }
+          }
+          if(property_exists($val, 'description')) {
+              $r[$start_at]['description'] = $val->description;
           }
           $this->addEvent($r);
         }
       }
     }
 
+    private function isStartDaySameAsEnd($start, $end) {
+      return (($start['year'] == $end['year']) &&
+              ($start['month'] == $end['month']) &&
+              ($start['day'] == $end['day']));
+    }
 
     private function addFeed($result) {
       foreach ($result as $key => $val) {
@@ -195,7 +215,7 @@ class FacebookPlugin extends Plugin {
       if(empty($tags_string)) return true;
       $all_tags = explode(" ", $tags_string);
       foreach($all_tags as $atag) {
-        if(stripos( $message, $atag ) === FALSE) {
+        if(stripos( $message, $atag ) == FALSE) {
           return false;
         }
       }

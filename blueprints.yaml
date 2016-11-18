@@ -1,5 +1,5 @@
 name: Facebook
-version: 1.3.0
+version: 1.3.1
 description: "**Facebook** is a plugin that embeds Facebook page content or events into your Grav website."
 icon: facebook
 author:
@@ -110,6 +110,17 @@ form:
       default: ''
       validate:
         type: string
+
+    facebook_event_settings.show_cover:
+      type: toggle
+      label: Show Events Cover image
+      highlight: 1
+      default: 1
+      options:
+        1: Enabled
+        0: Disabled
+      validate:
+        type: bool
 
     facebook_event_settings.page_name:
       type: text

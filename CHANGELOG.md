@@ -1,3 +1,9 @@
+# v1.3.1
+## 11/18/2016
+
+1. [](#new)
+  * Add Facebook Events coverpage if enabled on configuration
+
 # v1.3.0
 ## 11/18/2016
 
