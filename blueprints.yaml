@@ -1,5 +1,5 @@
 name: Facebook
-version: 1.2.2
+version: 1.3.0
 description: "**Facebook** is a plugin that embeds Facebook page content or events into your Grav website."
 icon: facebook
 author:
@@ -8,7 +8,7 @@ author:
 homepage: https://github.com/mikahanninen/grav-plugin-facebook
 keywords: facebook
 bugs: https://github.com/mikahanninen/grav-plugin-facebook/issues
-docs: https://github.com/mikahanninen/grav-plugin-facebook/blob/develop/README.md
+docs: https://github.com/mikahanninen/grav-plugin-facebook/blob/master/README.md
 license: MIT
 
 form:
@@ -48,8 +48,8 @@ form:
     facebook_page_settings.page_name:
       type: text
       size: large
-      label: Page name
-      help: Facebook page name whose feed will be shown. Used in a link.
+      label: Posts page name
+      help: Facebook page name whose posts will be shown. Used in a link.
       placeholder: "page name"
       default: ''
       validate:
@@ -107,6 +107,16 @@ form:
       label: Title for Events
       help: Title for section of Facebook Events
       placeholder: "title"
+      default: ''
+      validate:
+        type: string
+
+    facebook_event_settings.page_name:
+      type: text
+      size: large
+      label: Events page name
+      help: Facebook page name whose events will be shown. Used in a link.
+      placeholder: "page name"
       default: ''
       validate:
         type: string

@@ -5,6 +5,7 @@ use \Grav\Common\Plugin;
 use Grav\Common\Data\Data;
 use Grav\Common\Page\Page;
 use Grav\Common\GPM\Response;
+use \DateTime;
 
 class FacebookPlugin extends Plugin {
     private $template_post_html = 'partials/facebook.post.html.twig';
@@ -146,6 +147,8 @@ class FacebookPlugin extends Plugin {
           $start_date_array['dayName'] = date('l', mktime(0, 0, 0, $start_date_array['month'], $start_date_array['day'], $start_date_array['year']));
           $end_date_array['monthName'] = date('F', mktime(0, 0, 0, $end_date_array['month'], 10));
 
+          $r[$start_at]['original_start'] = $start_at;
+          $r[$start_at]['original_end'] = $end_at;
           $r[$start_at]['start_time'] = $start_date_array;
           $r[$start_at]['end_time'] = $end_date_array;
           if(($start_date_array['year'] === $end_date_array['year']) &&
@@ -158,15 +161,14 @@ class FacebookPlugin extends Plugin {
           } else {
             $r[$start_at]['period'] = $start_date_array['day'].'. '.$start_date_array['monthName'].' '.$start_date_array['year'].' - '.$end_date_array['day'].'. '.$end_date_array['monthName'].' '.$end_date_array['year'];
           }
+          $r[$start_at]['event_link'] = $val->id;
+          $r[$start_at]['name'] = nl2br($val->name);
+          $r[$start_at]['place'] = '';
+          if(property_exists($val, 'place')) {
+              $r[$start_at]['place'] = $val->place->name;
+          }
+          $this->addEvent($r);
         }
-
-        $r[$start_at]['name'] = nl2br($val->name);
-        $r[$start_at]['place'] = '';
-        if(property_exists($val, 'place')) {
-            $r[$start_at]['place'] = $val->place->name;
-        }
-
-        $this->addEvent($r);
       }
     }
 
