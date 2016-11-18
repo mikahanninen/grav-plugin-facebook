@@ -2,13 +2,14 @@
 {{ sectionTitle }}
 <table>
 {% for event in events|slice(0, count)  %}
-  <tr class='facebook-event'>
+  <tr class='facebook-event' data-timestart='{{ event.original_start }}' data-timeend='{{ event.original_end}}'>
     <td class='start-date'>
       <span class='month'>{{ event.start_time.monthName }}</span>
       <span class='day'>{{ event.start_time.day }}</span>
     </td>
     <td class='details'>
-      <span class='name'>{{ event.name }}</span><span class='location'>{{ event.place }}</span>
+      <a href='https://www.facebook.com/events/{{ event.event_link }}'><span class='name'>{{ event.name }}</span></a>
+      <span class='location'>{{ event.place }}</span>
       <span class='period'>{{ event.period }}</span>
     </td>
   </tr>

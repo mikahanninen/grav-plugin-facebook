@@ -1,3 +1,9 @@
+# v1.3.0
+## 11/18/2016
+
+1. [](#new)
+  * Add links to Facebook events
+
 # v1.2.2
 ## 11/12/2016
 
