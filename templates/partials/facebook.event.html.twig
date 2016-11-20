@@ -11,7 +11,7 @@
       {% if event.cover != '' %}
         <td class='cover-image' style='background-position-x: {{ event.cover.offset_x }}px; background-position-y: -{{ event.cover.offset_y }}px; background-image: url({{ event.cover.source }});'/></td>
       {% else %}
-        <td class='cover-image' style='padding: 0; text-align: center; font-size: 30px;'/><i class="fa fa-calendar" aria-hidden='true'></i></td>
+        <td class='cover-image'/></td>
       {% endif %}
     {% endif %}
     <td class='details'>
