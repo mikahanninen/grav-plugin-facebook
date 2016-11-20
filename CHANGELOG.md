@@ -1,3 +1,9 @@
+# v1.3.2
+## 11/20/2016
+
+1. [](#improved)
+  * Refactor how Facebook Event cover image is placed into template
+
 # v1.3.1
 ## 11/18/2016
 
