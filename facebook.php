@@ -13,7 +13,6 @@ class FacebookPlugin extends Plugin {
     private $template_post_vars = [];
     private $template_event_vars = [];
     private $events = array();
-    private $eventCover = '';
     private $feeds = array();
 
     /**
@@ -98,7 +97,7 @@ class FacebookPlugin extends Plugin {
 
       $this->template_event_vars = [
           'sectionTitle'  => '<h3 class="heading">'.$config->get('facebook_event_settings.section_title').'</h3>',
-          'cover'         => ($config->get('facebook_event_settings.show_cover') == '1') ? $this->eventCover : '',
+          'showCover'     => ($config->get('facebook_event_settings.show_cover') == '1') ? true : false,
           'events'        => $this->events,
           'count'         => empty($config->get('facebook_event_settings.count')) ? 7 : $config->get('facebook_event_settings.count')
       ];
@@ -122,7 +121,6 @@ class FacebookPlugin extends Plugin {
           if(property_exists($val, 'attachments') && property_exists($val->attachments->data[0], 'media')) {
             $image_html = "<figure>";
             $image_html .= "<img class='media-object' src='".$val->attachments->data[0]->media->image->src."'>";
-            //if(property_exists($val->attachments->data[0], 'description')) $image_html .= "<figcaption>".nl2br($val->attachments->data[0]->description)."</figcaption>";
             $image_html .= "</figure>";
           }
 
@@ -140,11 +138,6 @@ class FacebookPlugin extends Plugin {
       $content = json_decode($json);
 
       foreach($content->data as $val) {
-        if($this->eventCover == '') {
-          if(property_exists($val, 'cover')) {
-            $this->eventCover = $val->cover;
-          }
-        }
         if(property_exists($val, 'start_time') && property_exists($val, 'end_time')) {
           $start_at = $val->start_time;
           $end_at = $val->end_time;
@@ -172,7 +165,11 @@ class FacebookPlugin extends Plugin {
           $r[$start_at]['name'] = nl2br($val->name);
           $r[$start_at]['place'] = '';
           $r[$start_at]['description'] = '';
+          $r[$start_at]['cover'] = '';
 
+          if(property_exists($val, 'cover')) {
+            $r[$start_at]['cover'] = $val->cover;
+          }
           if(property_exists($val, 'place')) {
               $r[$start_at]['place']['name'] = $val->place->name;
               if(property_exists($val->place, 'location')) {

@@ -10,7 +10,7 @@
 #facebook-posts .post-icon { display: inline-block; font-size: 22px; line-height: 22px; padding-right: 10px; }
 #facebook-posts .media-heading { display: inline-block; }
 
-#facebook-events .cover-image { display: block; min-height: 300px; min-width: 50%; margin-bottom: 20px; background-size: cover; border: 1px solid #999; padding: 5px;}
+#facebook-events .cover-image { width: 150px; max-height: 100px; background-size: cover; color: #000; }
 #facebook-events td span { display: block; }
 #facebook-events .start-date { width: 100px; text-align: center; }
 #facebook-events .start-date .month { text-transform: uppercase; color: red; }

@@ -1,8 +1,5 @@
 <div id='facebook-events'>
 {{ sectionTitle }}
-{% if cover != '' %}
-  <img class='cover-image' style='position: relative; left: {{ cover.offset_x }}; top: -{{ cover.offset_y }};' src='{{ cover.source }}'/>
-{% endif %}
 <table>
 {% for event in events|slice(0, count)  %}
   <tr class='facebook-event' data-timestart='{{ event.original_start }}' data-timeend='{{ event.original_end}}'>
@@ -10,6 +7,13 @@
       <span class='month'>{{ event.start_time.monthName }}</span>
       <span class='day'>{{ event.start_time.day }}</span>
     </td>
+    {% if showCover %}
+      {% if event.cover != '' %}
+        <td class='cover-image' style='background-position-x: {{ event.cover.offset_x }}px; background-position-y: -{{ event.cover.offset_y }}px; background-image: url({{ event.cover.source }});'/></td>
+      {% else %}
+        <td class='cover-image' style='padding: 0; text-align: center; font-size: 30px;'/><i class="fa fa-calendar" aria-hidden='true'></i></td>
+      {% endif %}
+    {% endif %}
     <td class='details'>
       <a href='https://www.facebook.com/events/{{ event.event_link }}'><span class='name'>{{ event.name }}</span></a>
       <span class='location'>{{ event.place.name }}</span>
