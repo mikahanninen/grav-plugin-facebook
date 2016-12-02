@@ -10,6 +10,10 @@
 
 ![](assets/facebook_events_example.png)
 
+### Album example
+
+![](assets/facebook_album_example.png)
+
 # Installation
 
 Installing the Facebook plugin can be done in one of two ways. Using GPM (Grav Package Manager) installation method enables you to quickly and easily install the plugin with a simple terminal command, while the manual method enables you to do so via a zip file.
@@ -114,3 +118,34 @@ This will be converted into your Facebook events as follows:
 </table>
 </div>
 ```
+
+# Getting Facebook Album
+
+You simply need to include a function your template file such as:
+
+```
+{{ facebook_album() }}
+```
+
+In the above 'album.name' is set at plugin configuration.
+Or you can give album name as function parameter like this:
+
+```
+{{ facebook_album('My Greatest Album') }}
+```
+
+This will be converted into your Facebook album as follows:
+
+```
+<div id='facebook-gallery'>
+<h5>Album: {{ album.name }}</h5>
+<div id='facebook-gallery-photos'>
+    <img src="{{ photo.source }}" width=300 height=200/>
+    ...
+</div>
+</div>
+```
+
+## The Unitegallery jQuery plugin
+
+[Unite gallery](http://unitegallery.net/) can be used to display album photos and its theme can be set from the plugin configuration.

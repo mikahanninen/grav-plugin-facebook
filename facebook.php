@@ -10,10 +10,12 @@ use \DateTime;
 class FacebookPlugin extends Plugin {
     private $template_post_html = 'partials/facebook.post.html.twig';
     private $template_event_html = 'partials/facebook.event.html.twig';
+    private $template_gallery_html = 'partials/facebook.gallery.html.twig';
     private $template_post_vars = [];
     private $template_event_vars = [];
     private $events = array();
     private $feeds = array();
+    private $album;
 
     /**
      * Return a list of subscribed events.
@@ -43,8 +45,18 @@ class FacebookPlugin extends Plugin {
     public function onTwigInitialized() {
         $this->grav['twig']->twig->addFunction(new \Twig_SimpleFunction('facebook_posts', [$this, 'getFacebookPosts']));
         $this->grav['twig']->twig->addFunction(new \Twig_SimpleFunction('facebook_events', [$this, 'getFacebookEvents']));
+        $this->grav['twig']->twig->addFunction(new \Twig_SimpleFunction('facebook_album', [$this, 'getFacebookAlbum']));
         if ($this->config->get('plugins.facebook.built_in_css')) {
             $this->grav['assets']->add('plugin://facebook/css/facebook.css');
+        }
+        if ($this->config->get('plugins.facebook.use_unitegallery_plugin')) {
+            $this->grav['assets']->addJs('plugin://facebook/js/jquery-11.0.min.js');
+            $this->grav['assets']->addJs('plugin://facebook/assets/unitegallery/js/unitegallery.min.js');
+		        $this->grav['assets']->addCss('plugin://facebook/assets/unitegallery/css/unite-gallery.css');
+            // Theme asset css & js
+            $themeName = $this->config->get('plugins.facebook.facebook_album_settings.unitegallery_theme');
+            $this->grav['assets']->addJs('plugin://facebook/assets/unitegallery/themes/'.$themeName.'/ug-theme-'.$themeName.'.js');
+            $this->grav['assets']->addCss('plugin://facebook/assets/unitegallery/themes/default/ug-theme-default.css');
         }
     }
 
@@ -106,6 +118,27 @@ class FacebookPlugin extends Plugin {
       return $output;
     }
 
+    public function getFacebookAlbum($album_name_from_page = "") {
+      /** @var Page $page */
+      $page = $this->grav['page'];
+      /** @var Twig $twig */
+      $twig = $this->grav['twig'];
+      /** @var Data $config */
+      $config = $this->mergeConfig($page, TRUE);
+
+      $album_name = empty($album_name_from_page) ? $config->get('facebook_album_settings.album_name') : $album_name_from_page;
+
+      // Generate API url
+      $url = 'https://graph.facebook.com/'.$config->get('facebook_page_settings.page_id').'/albums?access_token='.$config->get('facebook_common_settings.application_id').'|'.$config->get('facebook_common_settings.application_secret');
+      $results = Response::get($url);
+      $this->parseGalleryResponse($results, $config, $album_name);
+      $template_event_vars = [
+          'album'           => $this->album,
+          'useUnitePlugin'  => ($config->get('facebook_album_settings.use_unitegallery') == '1') ? true : false,
+      ];
+      $output = $this->grav['twig']->twig()->render($this->template_gallery_html, $template_event_vars);
+      return $output;
+    }
 
     private function parsePostResponse($json, $config, $tags_string) {
       $r = array();
@@ -183,6 +216,32 @@ class FacebookPlugin extends Plugin {
         }
       }
     }
+
+    private function getAlbumPhotos($albumId) {
+      /** @var Page $page */
+      $page = $this->grav['page'];
+      /** @var Twig $twig */
+      $twig = $this->grav['twig'];
+      /** @var Data $config */
+      $config = $this->mergeConfig($page, TRUE);
+      // Generate API url
+      $url = 'https://graph.facebook.com/'.$albumId.'/photos?fields=source&access_token='.$config->get('facebook_common_settings.application_id').'|'.$config->get('facebook_common_settings.application_secret');
+      $results = Response::get($url);
+      $json = json_decode($results);
+      return $json->data;
+    }
+
+    private function parseGalleryResponse($json, $config, $album_name) {
+      $content = json_decode($json);
+      foreach($content->data as $val) {
+        if(strcasecmp($val->name, $album_name) === 0) {
+          $this->album = $val;
+          $this->album->photos = $this->getAlbumPhotos($this->album->id);
+          break;
+        }
+      }
+    }
+
 
     private function isStartDaySameAsEnd($start, $end) {
       return (($start['year'] == $end['year']) &&
