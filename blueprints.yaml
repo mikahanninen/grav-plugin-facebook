@@ -1,6 +1,6 @@
 name: Facebook
-version: 1.3.2
-description: "**Facebook** is a plugin that embeds Facebook page content or events into your Grav website."
+version: 1.4.0
+description: "**Facebook** is a plugin that embeds Facebook page content, album or events into your Grav website."
 icon: facebook
 author:
   name: Mika Hänninen
@@ -152,6 +152,45 @@ form:
         type: number
         min: 1
         max: 65535
+
+    AlbumSettings:
+      type: section
+      title: Album settings
+      underline: true
+
+    facebook_album_settings.use_unitegallery:
+      type: toggle
+      label: Use Unitegallery for Albums
+      highlight: 1
+      default: 1
+      options:
+        1: Enabled
+        0: Disabled
+      validate:
+        type: bool
+
+    facebook_album_settings.album_name:
+      type: text
+      size: large
+      label: Album name
+      help: Album name whose photos will be shown.
+      placeholder: "album name"
+      default: ''
+      validate:
+        type: string
+
+    facebook_album_settings.unitegallery_theme:
+      type: select
+      label: Unitegallery Theme
+      size: small
+      default: default
+      options:
+        default: default
+        compact: compact
+        grid: grid
+        slider: slider
+        video: video
+
 
     CommonSettings:
       type: section
