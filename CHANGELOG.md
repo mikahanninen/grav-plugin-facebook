@@ -1,3 +1,9 @@
+# v1.4.2
+## 03/12/2017
+
+1. [](#bugfix)
+  * Fix version information
+
 # v1.4.1
 ## 03/12/2017
 
