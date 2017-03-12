@@ -1,3 +1,9 @@
+# v1.4.1
+## 03/12/2017
+
+1. [](#improved)
+  * Refactor how Facebook Page cover image is placed into template
+
 # v1.4.0
 ## 12/03/2016
 
