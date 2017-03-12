@@ -1,5 +1,5 @@
 <div id='facebook-events'>
-{{ sectionTitle }}
+<h3 class="heading">{{sectionTitleRaw}}</h3>
 <table>
 {% for event in events|slice(0, count)  %}
   <tr class='facebook-event' data-timestart='{{ event.original_start }}' data-timeend='{{ event.original_end}}'>

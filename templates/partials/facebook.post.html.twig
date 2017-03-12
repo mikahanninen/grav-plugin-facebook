@@ -1,5 +1,5 @@
 <div id='facebook-posts'>
-{{ sectionTitle }}
+<a href="{{pageLink}}"><h3 class="heading">{{sectionTitleRaw}}</h3></a>
 {% for post in feed|slice(0, count)  %}
   <div class='facebook-post'>
     <a href='{{ post.link }}' title='Facebook post'>

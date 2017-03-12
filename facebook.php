@@ -84,6 +84,8 @@ class FacebookPlugin extends Plugin {
       $this->parsePostResponse($results, $config, $filter_by_tags);
 
       $this->template_post_vars = [
+          'pageLink' => 'https://www.facebook.com/'.$config->get('facebook_page_settings.page_name'),
+          'sectionTitleRaw' => $config->get('facebook_page_settings.section_title'),
           'sectionTitle'  => '<a href="https://www.facebook.com/'.$config->get('facebook_page_settings.page_name').'/"><h3 class="heading">'.$config->get('facebook_page_settings.section_title').'</h3></a>',
           'feed'          => $this->feeds,
           'count'         => empty($config->get('facebook_page_settings.count')) ? 7 : $config->get('facebook_page_settings.count')
@@ -108,6 +110,7 @@ class FacebookPlugin extends Plugin {
       $this->parseEventResponse($results, $config);
 
       $this->template_event_vars = [
+          'sectionTitleRaw' => $config->get('facebook_event_settings.section_title'),
           'sectionTitle'  => '<h3 class="heading">'.$config->get('facebook_event_settings.section_title').'</h3>',
           'showCover'     => ($config->get('facebook_event_settings.show_cover') == '1') ? true : false,
           'events'        => $this->events,
@@ -150,15 +153,17 @@ class FacebookPlugin extends Plugin {
           $created_date_object = date_create($created_at);
           $formatted_date = date_format($created_date_object, $config->get('facebook_page_settings.date_format'));
           $image_html = "";
+          $imageSrc = (property_exists($val, 'attachments') && property_exists($val->attachments->data[0], 'media')) ? $val->attachments->data[0]->media->image->src : null;
 
-          if(property_exists($val, 'attachments') && property_exists($val->attachments->data[0], 'media')) {
+          if($imageSrc) {
             $image_html = "<figure>";
-            $image_html .= "<img class='media-object' src='".$val->attachments->data[0]->media->image->src."'>";
+            $image_html .= '<img class="media-object" src="'.$imageSrc.'">';
             $image_html .= "</figure>";
           }
 
           $r[$created_at]['time'] = $formatted_date;
           $r[$created_at]['image'] = $image_html;
+          $r[$created_at]['imageSrc'] = $imageSrc;
           $r[$created_at]['message'] = nl2br($val->message);
           $r[$created_at]['link'] = $val->permalink_url;
           $this->addFeed($r);
