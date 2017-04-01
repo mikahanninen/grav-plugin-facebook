@@ -1,3 +1,9 @@
+# v1.5.0
+## 04/01/2017
+
+1. [](#improved)
+  * Remove jQuery 1.11 from plugin assets
+  
 # v1.4.2
 ## 03/12/2017
 
