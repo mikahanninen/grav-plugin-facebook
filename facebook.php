@@ -186,7 +186,11 @@ class FacebookPlugin extends Plugin {
                 $image_html = "";
                 $imageSrc = (property_exists($val, 'attachments')
                     && property_exists($val->attachments->data[0], 'media'))
-                    ? $val->attachments->data[0]->media->image->src : null;
+                    ? $val->attachments->data[0]->media->image->src : (
+                        property_exists($val->attachments->data[0], 'subattachments')
+                        && property_exists($val->attachments->data[0]->subattachments->data[0], 'media')
+                        ? $val->attachments->data[0]->subattachments->data[0]->media->image->src : null
+                    );
 
                 if ($imageSrc) {
                     $image_html = "<figure>";
