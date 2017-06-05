@@ -175,6 +175,8 @@ class FacebookPlugin extends Plugin {
     private function parsePostResponse($json, $config, $tags_string) {
         $r = array();
         $content = json_decode($json);
+        
+        $count = $config->get('facebook_page_settings.count');
 
         foreach ($content->feed->data as $val) {
             if (property_exists($val, 'message') && $this->tagsExist($tags_string, $val->message)) {
@@ -194,12 +196,14 @@ class FacebookPlugin extends Plugin {
                     $image_html .= "</figure>";
                 }
 
-                $r[$created_at]['time'] = $formatted_date;
-                $r[$created_at]['image'] = $image_html;
-                $r[$created_at]['imageSrc'] = $imageSrc;
-                $r[$created_at]['message'] = nl2br($val->message);
-                $r[$created_at]['link'] = $val->permalink_url;
+                $r[$count]['time'] = $formatted_date;
+                $r[$count]['image'] = $image_html;
+                $r[$count]['imageSrc'] = $imageSrc;
+                $r[$count]['message'] = nl2br($val->message);
+                $r[$count]['link'] = $val->permalink_url;
                 $this->addFeed($r);
+                
+                $count -= 1;
             }
         }
     }
