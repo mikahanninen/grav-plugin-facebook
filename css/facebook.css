@@ -1,5 +1,5 @@
 #facebook-posts { color: black; border-top: 2px solid #888; padding-top: 20px; margin-top: 40px; }
-#facebook-posts .heading, #facebook-events .heading { color: black; line-height: 29px; padding-left: 40px; background-image: url(../assets/FB-f-Logo__blue_29.png); background-repeat: no-repeat; background-position: left center; text-transform: uppercase; font-family: "Roboto Slab","Droid Arabic Kufi",Arial,sans-serif;}
+#facebook-posts .heading, #facebook-events .heading { color: black; line-height: 29px; padding-left: 40px; background-image: url(../assets/FB-f-Logo__blue_29.png); background-repeat: no-repeat; background-position: left center;}
 #facebook-posts .facebook-post { color: black; padding: 10px; margin-bottom: 10px !important; border-bottom: 2px solid #888; }
 #facebook-posts .facebook-post h4 { margin-bottom: 0; }
 #facebook-posts .facebook-post a { color: black; }
