@@ -1,3 +1,15 @@
+# v1.6.0
+## 06/08/2017
+
+1. [](#improved)
+  * Pull request #24 "Remove plugin specific theming of headings"
+
+2. [](#improved)
+  * Pull request #27 "Grab first sub-image if several images on page"
+
+3. [](#improved)
+  * Pull request #28 "Order by unique count id rather than by date"
+
 # v1.5.0
 ## 04/01/2017
 
