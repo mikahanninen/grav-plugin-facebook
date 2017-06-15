@@ -1,0 +1,16 @@
+---
+date: '{{ original_start }}'
+title: '{{ name }}'
+menu: '{{ menu }}'
+unpublish_date: {{ unpublish_date }}
+redirect: 'https://facebook.com/events/{{ event_link }}'
+
+fb_event_id: {{ event_link }}
+{{ fb_cover }}
+{{ fb_place }}
+
+fb_fetch:
+    fetched: '{{ fetched_time }}'
+    updated: '{{ updated_time }}'
+---
+{{ description }}
