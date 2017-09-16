@@ -1,23 +1,23 @@
 <div id='facebook-events'>
-<h3 class="heading">{{sectionTitleRaw}}</h3>
+<h3 class="heading">{{ sectionTitleRaw|raw }}</h3>
 <table>
 {% for event in events|slice(0, count)  %}
-  <tr class='facebook-event' data-timestart='{{ event.original_start }}' data-timeend='{{ event.original_end}}'>
+  <tr class='facebook-event' data-timestart='{{ event.original_start|raw }}' data-timeend='{{ event.original_end|raw }}'>
     <td class='start-date'>
-      <span class='month'>{{ event.start_time.monthName }}</span>
-      <span class='day'>{{ event.start_time.day }}</span>
+      <span class='month'>{{ event.start_time.monthName|raw }}</span>
+      <span class='day'>{{ event.start_time.day|raw }}</span>
     </td>
     {% if showCover %}
       {% if event.cover != '' %}
-        <td class='cover-image' style='background-position-x: {{ event.cover.offset_x }}px; background-position-y: -{{ event.cover.offset_y }}px; background-image: url({{ event.cover.source }});'/></td>
+        <td class='cover-image' style='background-position-x: {{ event.cover.offset_x }}px; background-position-y: -{{ event.cover.offset_y }}px; background-image: url({{ event.cover.source|raw }});'/></td>
       {% else %}
         <td class='cover-image'/></td>
       {% endif %}
     {% endif %}
     <td class='details'>
-      <a href='https://www.facebook.com/events/{{ event.event_link }}'><span class='name'>{{ event.name }}</span></a>
-      <span class='location'>{{ event.place.name }}</span>
-      <span class='period'>{{ event.period }}</span>
+      <a href='https://www.facebook.com/events/{{ event.event_link|raw }}'><span class='name'>{{ event.name|raw }}</span></a>
+      <span class='location'>{{ event.place.name|raw }}</span>
+      <span class='period'>{{ event.period|raw }}</span>
     </td>
   </tr>
 {% endfor %}
