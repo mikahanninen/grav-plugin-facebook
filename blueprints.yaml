@@ -1,5 +1,5 @@
 name: Facebook
-version: 1.6.1
+version: 1.6.2
 description: "**Facebook** is a plugin that embeds Facebook page content, album or events into your Grav website."
 icon: facebook
 author:
@@ -169,6 +169,16 @@ form:
       validate:
         type: bool
 
+    facebook_album_settings.album_page_id:
+      type: text
+      size: small
+      label: Album page ID
+      help: Facebook page id whose ALBUM will be shown. If empty, shows album for same page as posts.
+      placeholder: "album page id"
+      default: ''
+      validate:
+        type: string
+        
     facebook_album_settings.album_name:
       type: text
       size: large
