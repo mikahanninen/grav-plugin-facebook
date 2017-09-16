@@ -1,8 +1,8 @@
 <div id='facebook-gallery'>
-<h5>Album: {{ album.name }}</h5>
+<h5>Album: {{ album.name|raw }}</h5>
 <div id='facebook-gallery-photos'>
 {% for photo in album.photos %}
-    <img src="{{ photo.source }}" width=300 height=200/>
+    <img src="{{ photo.source|raw }}" width=300 height=200/>
 {% endfor %}
 </div>
 </div>
