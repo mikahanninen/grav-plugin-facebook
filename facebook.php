@@ -49,7 +49,8 @@ class FacebookPlugin extends Plugin {
         if ($this->config->get('plugins.facebook.built_in_css')) {
             $this->grav['assets']->add('plugin://facebook/css/facebook.css');
         }
-        if ($this->config->get('plugins.facebook.use_unitegallery_plugin')) {
+        if ($this->config->get('plugins.facebook.facebook_album_settings.use_unitegallery')) {
+            $this->grav['assets']->add('jquery', 101);
             $this->grav['assets']->addJs('plugin://facebook/assets/unitegallery/js/unitegallery.min.js');
             $this->grav['assets']->addCss('plugin://facebook/assets/unitegallery/css/unite-gallery.css');
             // Theme asset css & js
@@ -152,13 +153,18 @@ class FacebookPlugin extends Plugin {
         /** @var Data $config */
         $config = $this->mergeConfig($page, TRUE);
 
+        $album_page_id =
+        empty($config->get('facebook_album_settings.album_page_id'))
+            ? $config->get('facebook_page_settings.page_id')
+            : $config->get('facebook_album_settings.album_page_id');
+
         $album_name =
             empty($album_name_from_page) ? $config->get('facebook_album_settings.album_name')
                 : $album_name_from_page;
 
         // Generate API url
         $url =
-            'https://graph.facebook.com/' . $config->get('facebook_page_settings.page_id')
+            'https://graph.facebook.com/' . $album_page_id
             . '/albums?access_token=' . $config->get('facebook_common_settings.application_id')
             . '|' . $config->get('facebook_common_settings.application_secret');
         $results = Response::get($url);
@@ -201,6 +207,7 @@ class FacebookPlugin extends Plugin {
                     $image_html .= "</figure>";
                 }
 
+                $r[$count]['timeObject'] = $created_date_object;
                 $r[$count]['time'] = $formatted_date;
                 $r[$count]['image'] = $image_html;
                 $r[$count]['imageSrc'] = $imageSrc;

@@ -1,8 +1,11 @@
-# v1.6.1
-## 06/11/2017
+# v1.6.2
+## 09/16/2017
 
-1. [](#bugfix)
-  * Fix for posts without any images
+1. [](#improved)
+  * Add |raw filter for HTML templates
+
+2. [](#bugfix)
+  * Fix jQuery usage with UniteGallery
 
 # v1.6.0
 ## 06/08/2017
