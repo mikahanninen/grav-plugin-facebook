@@ -1,3 +1,14 @@
+# v1.7.0
+## 10/29/2017
+
+1. [](#improved)
+  * Add more checks into Events place.
+  https://github.com/mikahanninen/grav-plugin-facebook/issues/36
+
+2. [](#improved)
+  * Translated day and month names in the Events
+  https://github.com/mikahanninen/grav-plugin-facebook/issues/37
+
 # v1.6.2
 ## 09/16/2017
 

@@ -232,12 +232,12 @@ class FacebookPlugin extends Plugin {
                 $end_date_array = date_parse($end_at);
 
                 $start_date_array['monthName'] =
-                    date('F', mktime(0, 0, 0, $start_date_array['month'], 10));
+                    strftime ('%B', mktime(0, 0, 0, $start_date_array['month'], 10));
                 $start_date_array['dayName'] =
-                    date('l', mktime(0, 0, 0, $start_date_array['month'], $start_date_array['day'],
+                    strftime ('%A', mktime(0, 0, 0, $start_date_array['month'], $start_date_array['day'],
                         $start_date_array['year']));
                 $end_date_array['monthName'] =
-                    date('F', mktime(0, 0, 0, $end_date_array['month'], 10));
+                    strftime ('%B', mktime(0, 0, 0, $end_date_array['month'], 10));
 
                 $r[$start_at]['original_start'] = $start_at;
                 $r[$start_at]['original_end'] = $end_at;
@@ -271,9 +271,15 @@ class FacebookPlugin extends Plugin {
                     $r[$start_at]['cover'] = $val->cover;
                 }
                 if (property_exists($val, 'place')) {
-                    $r[$start_at]['place']['name'] = $val->place->name;
+                    if (property_exists($val->place, 'name')) {
+                        $r[$start_at]['place']['name'] = $val->place->name;
+                    }
                     if (property_exists($val->place, 'location')) {
-                        $r[$start_at]['place']['location'] = $val->place->location;
+                        $city = '';
+                        $country = '';
+                        if (property_exists($val->place->location, 'city')) $city = $val->place->location->city;
+                        if (property_exists($val->place->location, 'country')) $country = $val->place->location->country;
+                        $r[$start_at]['place']['location'] = $city.' '.$country;
                     }
                 }
                 if (property_exists($val, 'description')) {
