@@ -232,12 +232,12 @@ class FacebookPlugin extends Plugin {
                 $end_date_array = date_parse($end_at);
 
                 $start_date_array['monthName'] =
-                    date('F', mktime(0, 0, 0, $start_date_array['month'], 10));
+                    strftime ('%B', mktime(0, 0, 0, $start_date_array['month'], 10));
                 $start_date_array['dayName'] =
-                    date('l', mktime(0, 0, 0, $start_date_array['month'], $start_date_array['day'],
+                    strftime ('%A', mktime(0, 0, 0, $start_date_array['month'], $start_date_array['day'],
                         $start_date_array['year']));
                 $end_date_array['monthName'] =
-                    date('F', mktime(0, 0, 0, $end_date_array['month'], 10));
+                    strftime ('%B', mktime(0, 0, 0, $end_date_array['month'], 10));
 
                 $r[$start_at]['original_start'] = $start_at;
                 $r[$start_at]['original_end'] = $end_at;
