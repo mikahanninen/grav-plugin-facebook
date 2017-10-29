@@ -271,9 +271,15 @@ class FacebookPlugin extends Plugin {
                     $r[$start_at]['cover'] = $val->cover;
                 }
                 if (property_exists($val, 'place')) {
-                    $r[$start_at]['place']['name'] = $val->place->name;
+                    if (property_exists($val->place, 'name')) {
+                        $r[$start_at]['place']['name'] = $val->place->name;
+                    }
                     if (property_exists($val->place, 'location')) {
-                        $r[$start_at]['place']['location'] = $val->place->location;
+                        $city = '';
+                        $country = '';
+                        if (property_exists($val->place->location, 'city')) $city = $val->place->location->city;
+                        if (property_exists($val->place->location, 'country')) $country = $val->place->location->country;
+                        $r[$start_at]['place']['location'] = $city.' '.$country;
                     }
                 }
                 if (property_exists($val, 'description')) {
