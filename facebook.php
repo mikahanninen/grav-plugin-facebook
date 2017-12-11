@@ -263,7 +263,7 @@ class FacebookPlugin extends Plugin {
                 }
                 $r[$start_at]['event_link'] = $val->id;
                 $r[$start_at]['name'] = nl2br($val->name);
-                $r[$start_at]['place'] = '';
+                $r[$start_at]['place'] = array();
                 $r[$start_at]['description'] = '';
                 $r[$start_at]['cover'] = '';
 
