@@ -181,13 +181,16 @@ class FacebookPlugin extends Plugin {
     private function parsePostResponse($json, $config, $tags_string) {
         $r = array();
         $content = json_decode($json);
-        
+
         $count = $config->get('facebook_page_settings.count');
 
         foreach ($content->feed->data as $val) {
             if (property_exists($val, 'message') && $this->tagsExist($tags_string, $val->message)) {
                 $created_at = $val->created_time;
                 $created_date_object = date_create($created_at);
+                if( !empty($tz = $this->grav['config']->get('system.timezone')) ) {
+                    date_timezone_set($created_date_object, timezone_open($tz));
+                }
                 $formatted_date =
                     date_format($created_date_object,
                         $config->get('facebook_page_settings.date_format'));
@@ -214,7 +217,7 @@ class FacebookPlugin extends Plugin {
                 $r[$count]['message'] = nl2br($val->message);
                 $r[$count]['link'] = $val->permalink_url;
                 $this->addFeed($r);
-                
+
                 $count -= 1;
             }
         }
