@@ -1,6 +1,10 @@
 <div id='facebook-gallery'>
-<h5>Album: {{ album.name|raw }}</h5>
+<h5>Album : {{ album.name|raw }}</h5>
+{% if useUnitePlugin %}
+<div id='facebook-gallery-photos-{{ album.id }}'>
+{% else %}
 <div id='facebook-gallery-photos'>
+{% endif %}
 {% for photo in album.photos %}
     <img src="{{ photo.source|raw }}" width=300 height=200/>
 {% endfor %}
@@ -9,6 +13,6 @@
 
 {% if useUnitePlugin %}
 <script type="text/javascript">
-    jQuery("#facebook-gallery-photos").unitegallery();
+    jQuery("#facebook-gallery-photos-{{ album.id }}").unitegallery();
 </script>
 {% endif %}
