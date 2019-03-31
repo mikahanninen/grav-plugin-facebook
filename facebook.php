@@ -62,6 +62,16 @@ class FacebookPlugin extends Plugin {
         }
     }
 
+    private function getFacebookAccessToken($config) {
+        $url = "https://graph.facebook.com/oauth/access_token?"
+            ."client_id=".$config->get('facebook_common_settings.application_id')
+            ."&client_secret=".$config->get('facebook_common_settings.application_secret')
+            ."&grant_type=client_credentials";
+        $results = Response::get($url);
+        $json = json_decode($results);
+        return trim($json->access_token);
+    }
+
     /**
      * Add current directory to twig lookup paths.
      */
@@ -77,19 +87,17 @@ class FacebookPlugin extends Plugin {
         $twig = $this->grav['twig'];
         /** @var Data $config */
         $config = $this->mergeConfig($page, TRUE);
-
+        $accessToken = $this->getFacebookAccessToken($config);
         $filter_by_tags =
             empty($filtered_by_tags_from_page)
                 ? $config->get('facebook_page_settings.filter_by_tags')
                 : $filtered_by_tags_from_page;
+
         // Generate API url
         $url =
-            'https://graph.facebook.com/' . $config->get('facebook_page_settings.page_id')
-            . '/?fields=feed{permalink_url,created_time,link,attachments,message}&access_token='
-            . $config->get('facebook_common_settings.application_id') . '|'
-            . $config->get('facebook_common_settings.application_secret');
+            'https://graph.facebook.com/v3.2/' . $config->get('facebook_page_settings.page_id')
+            . '/feed?access_token='. $accessToken.'&fields=permalink_url,attachments,created_time,message&limit='.$config->get('facebook_page_settings.count');
         $results = Response::get($url);
-
         $this->parsePostResponse($results, $config, $filter_by_tags);
 
         $this->template_post_vars =
@@ -116,17 +124,14 @@ class FacebookPlugin extends Plugin {
         $twig = $this->grav['twig'];
         /** @var Data $config */
         $config = $this->mergeConfig($page, TRUE);
+        $accessToken = $this->getFacebookAccessToken($config);
 
         $events_page_id =
             empty($config->get('facebook_event_settings.events_page_id'))
                 ? $config->get('facebook_page_settings.page_id')
                 : $config->get('facebook_event_settings.events_page_id');
         // Generate API url
-        $url =
-            'https://graph.facebook.com/' . $events_page_id
-            . '/events?fields=cover,start_time,end_time,name,description,place&access_token='
-            . $config->get('facebook_common_settings.application_id') . '|'
-            . $config->get('facebook_common_settings.application_secret');
+        $url = 'https://graph.facebook.com/v3.2/'.$events_page_id.'/events?access_token='.$accessToken;
         $results = Response::get($url);
         $this->parseEventResponse($results, $config);
 
@@ -181,13 +186,15 @@ class FacebookPlugin extends Plugin {
     private function parsePostResponse($json, $config, $tags_string) {
         $r = array();
         $content = json_decode($json);
-        
         $count = $config->get('facebook_page_settings.count');
 
-        foreach ($content->feed->data as $val) {
+        foreach ($content->data as $val) {
             if (property_exists($val, 'message') && $this->tagsExist($tags_string, $val->message)) {
                 $created_at = $val->created_time;
                 $created_date_object = date_create($created_at);
+                if( !empty($tz = $this->grav['config']->get('system.timezone')) ) {
+                    date_timezone_set($created_date_object, timezone_open($tz));
+                }
                 $formatted_date =
                     date_format($created_date_object,
                         $config->get('facebook_page_settings.date_format'));
@@ -214,7 +221,7 @@ class FacebookPlugin extends Plugin {
                 $r[$count]['message'] = nl2br($val->message);
                 $r[$count]['link'] = $val->permalink_url;
                 $this->addFeed($r);
-                
+
                 $count -= 1;
             }
         }
@@ -263,7 +270,7 @@ class FacebookPlugin extends Plugin {
                 }
                 $r[$start_at]['event_link'] = $val->id;
                 $r[$start_at]['name'] = nl2br($val->name);
-                $r[$start_at]['place'] = '';
+                $r[$start_at]['place'] = array();
                 $r[$start_at]['description'] = '';
                 $r[$start_at]['cover'] = '';
 
@@ -297,11 +304,10 @@ class FacebookPlugin extends Plugin {
         $twig = $this->grav['twig'];
         /** @var Data $config */
         $config = $this->mergeConfig($page, TRUE);
+        $accessToken = $this->getFacebookAccessToken($config);
         // Generate API url
         $url =
-            'https://graph.facebook.com/' . $albumId . '/photos?fields=source&access_token='
-            . $config->get('facebook_common_settings.application_id') . '|'
-            . $config->get('facebook_common_settings.application_secret');
+            'https://graph.facebook.com/v3.2/' . $albumId . '/photos?fields=source&access_token='.$accessToken;
         $results = Response::get($url);
         $json = json_decode($results);
         return $json->data;
