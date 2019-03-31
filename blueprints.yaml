@@ -1,5 +1,5 @@
 name: Facebook
-version: 1.7.0
+version: 1.7.1
 description: "**Facebook** is a plugin that embeds Facebook page content, album or events into your Grav website."
 icon: facebook
 author:
@@ -178,7 +178,7 @@ form:
       default: ''
       validate:
         type: string
-        
+
     facebook_album_settings.album_name:
       type: text
       size: large
